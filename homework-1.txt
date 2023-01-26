@@ -1,0 +1,66 @@
+homework
+
+Question 1. Knowing docker tags
+	
+A: docker --help build
+
+Question 2. Understanding docker first run
+
+A: docker run -it --entrypoint=bash python:3.9
+   
+   pip list
+   
+   pip        22.0.4
+   setuptools 58.1.0
+   wheel      0.38.4
+
+Question 3. Count records
+How many taxi trips were totally made on January 15?
+
+Tip: started and finished on 2019-01-15.
+
+select count(*) 
+from taxi_trips
+where CAST(lpep_pickup_datetime AS DATE)='2019-01-15' AND CAST(lpep_dropoff_datetime AS DATE)='2019-01-15'
+
+Question 4: Largest trip for each day (Multiple choice)
+
+select lpep_pickup_datetime, lpep_dropoff_datetime, trip_distance
+from taxi_trips
+WHERE trip_distance = (SELECT MAX(trip_distance) FROM taxi_trips)
+
+
+select lpep_pickup_datetime, lpep_dropoff_datetime, trip_distance
+from taxi_trips
+ORDER BY trip_distance DESC
+
+
+
+Question 5:
+select *
+from taxi_trips
+where lpep_pickup_datetime::date = '2019-01-01' AND lpep_dropoff_datetime::date ='2019-01-01' AND (passenger_count=2)
+from taxi_trips
+where lpep_pickup_datetime::date = '2019-01-01' AND lpep_dropoff_datetime::date ='2019-01-01' AND (passenger_count=3)
+
+Question 6
+SELECT 
+ 	lpep_pickup_datetime,
+	lpep_dropoff_datetime,
+	total_amount,
+	taxi."PULocationID",
+	taxi."tip_amount",
+	zpu."Zone",
+	CONCAT(zpu."Borough",' / ', zpu."Zone") AS "pickup_loc",
+	CONCAT(zdo."Borough",' / ', zdo."Zone") AS "dropoff_loc"
+FROM 
+ taxi_trips taxi JOIN zones zpu 
+  ON taxi."PULocationID" = zpu."LocationID"
+  JOIN zones zdo
+  ON taxi."DOLocationID" = zdo."LocationID"
+WHERE
+ zpu."Zone" = 'Astoria'
+ORDER BY 
+ taxi."tip_amount"
+DESC
+LIMIT 1;
